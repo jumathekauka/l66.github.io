@@ -10,6 +10,8 @@ app.get("/", (request, response) => {
   response.render('index');
 });
 
+app.use(express.static(path.join(__dirname, "public")));
+
 app.get("/todos", async (_request, response) => {
   try {
     const todos = await Todo.findAll({ order: [["id", "ASC"]] });
