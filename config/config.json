@@ -2,24 +2,25 @@
   "development": {
     "username": "postgres",
     "password": "postgres",
-    "database": "wd-todo-dev",
+    "database": "todo-mang-dev",
     "host": "127.0.0.1",
-    "dialect": "postgres",
-    "logging": false
+    "dialect": "postgres"
   },
   "test": {
     "username": "postgres",
     "password": "postgres",
-    "database": "wd-todo-test",
+    "database": "todo-mang-test",
     "host": "127.0.0.1",
-    "dialect": "postgres",
-    "logging": false
+    "dialect": "postgres"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
-  }
+    "use_env_variable": "DATABASE_URL",
+    "dialect": "postgres",
+    "dialectOptions": {
+       "ssl": {
+         "require": true,
+         "rejectUnauthorized": false
+       }
+     }
+   }
 }

@@ -1,19 +1,24 @@
+/* eslint-disable comma-dangle */
+/* eslint-disable semi */
+/* eslint-disable quotes */
 const request = require("supertest");
 
 const db = require("../models/index");
 const app = require("../app");
 
+let server, agent;
+
 describe("Todo Application", function () {
-  const server = app.listen(3000, () => {});
-  const agent = request.agent(server);
   beforeAll(async () => {
     await db.sequelize.sync({ force: true });
+    server = app.listen(3000, () => {});
+    agent = request.agent(server);
   });
 
   afterAll(async () => {
     try {
       await db.sequelize.close();
-      server.close();
+      await server.close();
     } catch (error) {
       console.log(error);
     }
@@ -66,29 +71,21 @@ describe("Todo Application", function () {
     const parsedResponse = JSON.parse(response.text);
 
     expect(parsedResponse.length).toBe(4);
-    expect(parsedResponse[3]["title"]).toBe("Buy ps3");
+    expect(parsedResponse[3].title).toBe("Buy ps3");
   });
 
   test("Deletes a todo with the given ID if it exists and sends a boolean response", async () => {
+    // FILL IN YOUR CODE HERE
     const response = await agent.post("/todos").send({
-      title: "Buy ps3",
+      title: "Go to market",
       dueDate: new Date().toISOString(),
       completed: false,
     });
     const parsedResponse = JSON.parse(response.text);
     const todoID = parsedResponse.id;
+
     const deleteTodoResponse = await agent.delete(`/todos/${todoID}`).send();
-    expect(deleteTodoResponse.statusCode).toBe(200);
     const parsedDeleteResponse = JSON.parse(deleteTodoResponse.text);
     expect(parsedDeleteResponse).toBe(true);
-
-    const deleteNonExistentTodoResponse = await agent
-      .delete(`/todos/100`)
-      .send();
-    expect(deleteNonExistentTodoResponse.statusCode).toBe(404);
-    const parsedDeleteNonExistentTodoResponse = JSON.parse(
-      deleteNonExistentTodoResponse.text
-    );
-    expect(parsedDeleteNonExistentTodoResponse).toBe(false);
   });
 });
